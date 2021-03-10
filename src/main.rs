@@ -4,6 +4,7 @@ use foreign_types::ForeignTypeRef;
 use metal::*;
 use objc::{rc::autoreleasepool, runtime::YES};
 use skia::colors::WHITE;
+use skia::gpu::mtl;
 use skia::gpu::mtl::TextureInfo;
 use skia::gpu::BackendRenderTarget;
 use skia::gpu::DirectContext;
@@ -11,7 +12,7 @@ use skia::gpu::SurfaceOrigin;
 use skia::ColorSpace;
 use skia::ColorType;
 use skia::Surface;
-use std::mem;
+use std::{mem, ptr};
 use winit::event::{Event, VirtualKeyCode, WindowEvent};
 use winit::event_loop::{ControlFlow, EventLoop};
 use winit::platform::macos::WindowExtMacOS;
@@ -58,12 +59,12 @@ fn main() {
     let command_queue = device.new_command_queue();
 
     let mut ctx = unsafe {
-        DirectContext::new_metal(
+        let backend = mtl::BackendContext::new(
             device.as_ptr() as *mut _,
             command_queue.as_ptr() as *mut _,
-            None,
-        )
-        .expect("Unable to create direct context")
+            ptr::null_mut(),
+        );
+        DirectContext::new_metal(&backend, None).expect("Unable to create direct context")
     };
 
     fn create_surface(
@@ -82,16 +83,14 @@ fn main() {
 
         // TODO: let color_type = layer.pixel_format();
 
-        let surface = Surface::from_backend_render_target(
+        Surface::from_backend_render_target(
             ctx,
             &target,
             SurfaceOrigin::BottomLeft,
             ColorType::BGRA8888,
             ColorSpace::new_srgb(),
             None,
-        );
-
-        surface
+        )
     }
 
     let mut frame = 0;
@@ -132,7 +131,6 @@ fn main() {
                             canvas.clear(WHITE);
                             renderer::render_frame(frame % 360, 12, 60, canvas);
 
-                            surface.canvas().flush();
                             ctx.flush_and_submit();
 
                             //   let render_pass_descriptor = RenderPassDescriptor::new();
