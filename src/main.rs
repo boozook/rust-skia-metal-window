@@ -1,22 +1,23 @@
 use cocoa::{appkit::NSView, base::id as cocoa_id};
-use foreign_types::ForeignType;
-use foreign_types::ForeignTypeRef;
-use metal::*;
+use core_graphics_types::geometry::CGSize;
+use foreign_types::{ForeignType, ForeignTypeRef};
+use metal::{Device, MTLPixelFormat, MetalDrawableRef, MetalLayer};
 use objc::{rc::autoreleasepool, runtime::YES};
-use skia::colors::WHITE;
-use skia::gpu::mtl;
-use skia::gpu::mtl::TextureInfo;
-use skia::gpu::BackendRenderTarget;
-use skia::gpu::DirectContext;
-use skia::gpu::SurfaceOrigin;
-use skia::ColorSpace;
-use skia::ColorType;
-use skia::Surface;
+use skia::{
+    colors::WHITE,
+    gpu::{
+        mtl::{self, TextureInfo},
+        BackendRenderTarget, DirectContext, SurfaceOrigin,
+    },
+    ColorSpace, ColorType, Surface,
+};
 use std::{mem, ptr};
-use winit::event::{Event, VirtualKeyCode, WindowEvent};
-use winit::event_loop::{ControlFlow, EventLoop};
-use winit::platform::macos::WindowExtMacOS;
-use winit::window::Window;
+use winit::{
+    event::{Event, VirtualKeyCode, WindowEvent},
+    event_loop::{ControlFlow, EventLoop},
+    platform::macos::WindowExtMacOS,
+    window::Window,
+};
 use winit_input_helper::WinitInputHelper;
 
 mod renderer;

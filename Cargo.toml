@@ -10,30 +10,21 @@ publish = false
 euclid = "0.22"
 
 # window, events:
-winit = "0.24"
-winit_input_helper = "0.9"
+winit = "0.26.1"
+winit_input_helper = "0.11.0"
 # raw-window-handle = "0.3"
 
-# metal support:
-metal = { version = "0.21", optional = true }
-# to access raw metal ptrs:
-# foreign-types = { version = "0.5", optional = true }
-foreign-types = { version = "0.3", optional = true }
+# metal suport:
+core-graphics-types = "0.1"
+metal = { version = "0.23.1", optional = true }
+# to access raw metal ptrs (metal uses 0.3.2, 0.5.0 does isn't compatible):
+foreign-types = { version = "0.3.2", optional = true }
 # for that NSAutoReleasePool to be able to free metal devices:
 cocoa = { version = "0.24", optional = true }
 objc = { version = "0.2.7", optional = true }
 
-
-
-
 [dependencies.skia]
 package = "skia-safe"
-version = "0.38"
-features = [
-	# "textlayout"
-]
-
-[dependencies.skia-bindings]
 version = "0.38"
 features = [
 	# "textlayout"
@@ -46,7 +37,6 @@ default = [
 
 mtl = [
 	"skia/metal",
-	"skia-bindings/metal",
 	"metal",
 	"foreign-types",
 	"cocoa",
